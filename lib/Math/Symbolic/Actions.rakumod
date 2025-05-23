@@ -143,4 +143,4 @@ method infix_term ($/) {
         $<term>.made;
 }
 
-
+# vim: expandtab shiftwidth=4

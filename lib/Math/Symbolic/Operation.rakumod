@@ -75,7 +75,7 @@ class Math::Symbolic::Syntax {
             }
         }
 
-        return $str;
+        $str
     }
 }
 
@@ -134,5 +134,4 @@ class Math::Symbolic::Operation {
     }
 }
 
-
-
+# vim: expandtab shiftwidth=4

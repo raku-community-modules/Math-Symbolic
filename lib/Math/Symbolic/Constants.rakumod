@@ -9,3 +9,4 @@ enum Language is export <Math Raku>;
 subset NumIn of Numeric is export;
 subset NumOut of Real:D is export;
 
+# vim: expandtab shiftwidth=4

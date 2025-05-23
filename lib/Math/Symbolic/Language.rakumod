@@ -404,6 +404,7 @@ sub build_by_syntax (Bool :$syntax = False) {
         }
     }
 
-    return %by_syntax;
+    %by_syntax
 }
 
+# vim: expandtab shiftwidth=4

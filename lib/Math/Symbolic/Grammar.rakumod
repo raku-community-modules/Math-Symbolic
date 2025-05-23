@@ -141,3 +141,4 @@ my $circ_close = '[' ~ @(%circ.values).map("'" ~ * ~ "'").join('|') ~ ']';
 token circumfix_open { <$circ_open> }
 token circumfix_close { <$circ_close> }
 
+# vim: expandtab shiftwidth=4

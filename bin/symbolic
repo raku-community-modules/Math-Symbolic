@@ -1,5 +1,3 @@
-#!/usr/bin/env raku
-
 # simple command-line interface
 # a few other front ends eventually could be cool
     # REPL
@@ -34,4 +32,4 @@ sub MAIN (
     say $raku-routine ?? $obj.routine !! $obj.Str;
 }
 
-
+# vim: expandtab shiftwidth=4

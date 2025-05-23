@@ -1,5 +1,3 @@
-use v6;
-
 use Test;
 plan 11;
 
@@ -38,3 +36,4 @@ is
     "1 3",
     'quadratic solution to the leading problem in 1D seems correct';
 
+# vim: expandtab shiftwidth=4

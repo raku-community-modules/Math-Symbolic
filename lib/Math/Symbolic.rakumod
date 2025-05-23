@@ -15,7 +15,7 @@ multi method new ($in, *%args is copy) {
     %args<tree> = Math::Symbolic::Grammar.parse(~$in, actions => Math::Symbolic::Actions).made;
     die 'Parse failure: invalid expression' unless %args<tree>;
 
-    self.bless: |%args;
+    self.bless: |%args
 }
 
 method clone () {
@@ -38,7 +38,7 @@ method expression (Str:D $var) {
     my $new := self.clone.isolate($var);
     my $tree := $new.tree;
     $tree.set: $tree.children[1];
-    $new;
+    $new
 }
 
 method code ($language = 'raku', $tree = $!tree) {
@@ -50,7 +50,8 @@ method routine ($positional = False, $defaults? is copy, $tree = $!tree) {
     if defined $defaults {
         $defaults = Hash.new: @vars.map: * => $defaults
             unless $defaults ~~ Associative;
-    } else {
+    }
+    else {
         $defaults = {};
     }
     if $positional === True { @$positional = @vars; @vars = (); }
@@ -77,10 +78,7 @@ method routine ($positional = False, $defaults? is copy, $tree = $!tree) {
     "sub ($sig) is pure \{ " ~ $tree.translate('raku') ~ ' };';
 }
 
-method compile (|args) {
-    use MONKEY-SEE-NO-EVAL;
-    EVAL self.routine(|args);
-}
+method compile (|args) { self.routine(|args).EVAL }
 
 method evaluate (*%vals is copy) {
     for %vals.values {
@@ -100,10 +98,15 @@ method evaluate (*%vals is copy) {
     self.simplify;
 }
 
-# TODO need more property-based generic manipulations and per-op special cases, like *0, ^0, etc
-    # but avoid adding code in the ops
-    # iow properties are good for Operations (as long as they're optional with sane defaults), but code in those properties is bad, because the point of the Operation class is to be a simple declarative way to express the language, so minimizing complexity in the public API of ::Operation is central to its intended purpose
-    # TODO BUG speaking of minimizing complexity in ::Operation, please convert the .function/.syntax/.syntaxes/BUILD mess to Roles or something soon
+# TODO need more property-based generic manipulations and per-op special
+# cases, like *0, ^0, etc but avoid adding code in the ops iow properties
+# are good for Operations (as long as they're optional with sane defaults),
+# but code in those properties is bad, because the point of the Operation
+# class is to be a simple declarative way to express the language, so
+# minimizing complexity in the public API of ::Operation is central to its
+# intended purpose
+# TODO BUG speaking of minimizing complexity in ::Operation, please convert
+# the .function/.syntax/.syntaxes/BUILD mess to Roles or something soon
 # this is also highly inefficient
 method simplify () {
     my $tree = $!tree;
@@ -226,7 +229,7 @@ method simplify () {
             $hit = True;
         }
 
-        elsif my @nodes = $tree.find_all( :type<operation> ) {
+        elsif $tree.find_all( :type<operation> ) -> @nodes {
             # TODO we could use a smarter pattern to not have to re-test every single op in the tree repeatedly
             # except now we're doing many things in here
             while @nodes && !$hit {
@@ -327,7 +330,7 @@ method simplify () {
         }
     }
 
-    self.fold;
+    self.fold
 }
 
 method fold ($tree = $!tree) {
@@ -346,7 +349,7 @@ method fold ($tree = $!tree) {
         }
     }
 
-    self;
+    self
 }
 
 method poly ($var?, :$coef) {
@@ -380,7 +383,8 @@ method poly ($var?, :$coef) {
                     $side = 0;
                 }
             } # TODO else do something clever? can't solve t=√t, but can solve t²=t...
-        } else {
+        }
+        else {
             $side = ($tree.children[0].count < $tree.children[1].count);
         }
 
@@ -405,7 +409,7 @@ method poly ($var?, :$coef) {
 
     my \ret = self.condense($var, $work, :$coef);
     self.simplify;
-    ret;
+    ret
 }
 
 method condense ($var?, $tree = $!tree, :$coef = False) {
@@ -444,13 +448,16 @@ method condense ($var?, $tree = $!tree, :$coef = False) {
         my $content = $_.content;
         if $type eq 'symbol' {
             $vars.elem($content => 1)[0]++;
-        } elsif $type eq 'value' {
+        }
+        elsif $type eq 'value' {
             if defined $n[0] {
                 $n[0] = ($func.eval)($n[0], $content);
-            } else {
+            }
+            else {
                 $n[0] = $content;
             }
-        } elsif $type eq 'operation' {
+        }
+        elsif $type eq 'operation' {
             if $content eq $up {
                 my %subvar_count;
                 my @subparts;
@@ -462,24 +469,29 @@ method condense ($var?, $tree = $!tree, :$coef = False) {
                         my $subcontent = $sub.content;
                         if $subtype eq 'symbol' {
                             %subvar_count{$subcontent}++;
-                        } elsif $subtype eq 'value' {
+                        }
+                        elsif $subtype eq 'value' {
                             if %subvar_count{''}:exists {
                                 %subvar_count{''} = ($subfunc.eval)(
                                     %subvar_count{''}, $subcontent );
                             } else {
                                 %subvar_count{''} = $subcontent;
                             }
-                        } elsif $upup && $subtype eq 'operation' && $subcontent eq $upup &&
+                        }
+                        elsif $upup && $subtype eq 'operation' && $subcontent eq $upup &&
                             $sub.match: :children({:type<symbol>,}, {:type<value>,}) {
                             %subvar_count{$sub.children[0].content} += $sub.children[1].content;
-                        } else {
+                        }
+                        else {
                             @subparts.push: $sub;
                         }
                     }
-                } elsif $_.match: :children({:type<symbol>,}, {:type<value>,}) {
+                }
+                elsif $_.match: :children({:type<symbol>,}, {:type<value>,}) {
                     %subvar_count{$_.children[0].content}++;
                     %subvar_count{''} += $_.children[1].content;
-                } else {
+                }
+                else {
                     @subparts.push: $_;
                 }
 
@@ -489,19 +501,23 @@ method condense ($var?, $tree = $!tree, :$coef = False) {
                 my $elem := $vars.elem(|%subvar_count);
                 if %subvar_count {
                     $elem[0] += $count;
-                } else {
+                }
+                else {
                     unshift @subparts: $tree.new: :type<value>, :content($count)
                         unless $count == $subfunc.identity;
                 }
 
                 $elem.push: $tree.new-chain: $up, @subparts if @subparts;
-            } elsif $upup && $content eq $upup && $_.match:
+            }
+            elsif $upup && $content eq $upup && $_.match:
                 :children({:type<symbol>,}, {:type<value>,}) {
                 $vars.elem($_.children[0].content => $_.children[1].content)[0] += 1;
-            } else {
+            }
+            else {
                 @parts.push: $_;
             }
-        } else {
+        }
+        else {
             die "Error: cannot manipulate nodes of type '$type'";
         }
     }
@@ -526,7 +542,8 @@ method condense ($var?, $tree = $!tree, :$coef = False) {
                     .value == $upup.function.identity ?? $tree.new-sym(.key) !!
                     $tree.new-op($upup, $tree.new-sym(.key), $tree.new-val(.value))
                 };
-            } else {
+            }
+            else {
                 @subparts.append: $keyhash.map: -> $p {
                     my @sub;
                     @sub.push: $tree.new-sym($p.key) for ^($p.value);
@@ -537,7 +554,8 @@ method condense ($var?, $tree = $!tree, :$coef = False) {
             my $co = @$vals.shift;
             if ($co ~~ Math::Symbolic::Tree) {
                 unshift @subparts: $co.clone;
-            } else {
+            }
+            else {
                 unshift @subparts: $tree.new-val: $co;# if $co != $up.function.identity;
             }
             $elem.push: $tree.new-chain: $up, @subparts if @subparts;
@@ -559,26 +577,34 @@ method condense ($var?, $tree = $!tree, :$coef = False) {
                 my $new;
                 if $upup {
                     $new = $tree.new-op: $upup, $tree.new-sym($kk), $tree.new-val($kv);
-                } elsif $kv == $kv.Int && $kv > 0 {
+                }
+                elsif $kv == $kv.Int && $kv > 0 {
                     $new.push: $tree.new-sym($kk) for 1..$kv;
                     $new = $tree.new-chain: $up, |@$new;
-                } else {
+                }
+                else {
                     die "Error: this transformation would require the Knuth up arrow (NYI)";
                 }
                 if defined($var) && $kk eq $var && $up.function.commute {
                     @subparts.unshift: $new;
-                } else {
+                }
+                else {
                     @subparts.push: $new;
                 }
-            } else {
+            }
+            else {
                 @subparts.push: $tree.new-sym($kk);
             }
         }
 
         if @$vals && $vals[0] ~~ Numeric &&
             (my $v = $vals.shift) != $op.function.identity {
-            if $op.function.commute { $vals.unshift: $tree.new-val: $v }
-            else { $vals.push: $tree.new-val: $v }
+            if $op.function.commute {
+                $vals.unshift: $tree.new-val: $v
+            }
+            else {
+                $vals.push: $tree.new-val: $v
+            }
         }
 
         @subparts.push: $tree.new-chain: $op, @$vals if @$vals;
@@ -598,10 +624,11 @@ method condense ($var?, $tree = $!tree, :$coef = False) {
         for $vars.kv -> $k, $v {
             %return{$k.values[0]} = $v.children[1];
         }
-        return %return;
+        %return
     }
-
-    self;
+    else {
+        self
+    }
 }
 
 # roughly opposite of simplify
@@ -698,7 +725,7 @@ method normalize ($tree = $!tree) {
         }
     }
 
-    self.fold;
+    self.fold
 }
 
 # need sink_ops and float_ops (transform via down/up)
@@ -735,7 +762,8 @@ method expand () {
                 }
             ) {
                 $i = 0;
-            } elsif $func.commute &&
+            }
+            elsif $func.commute &&
                 $node.match: :children(
                     {
                         :type<value>,
@@ -769,12 +797,14 @@ method expand () {
 
             # distribution
             my $content = $down.name | $down.function.inverse.name;
-            if $node.children[0].match: :type<operation>, :$content
-                { $i = 0 }
+            if $node.children[0].match: :type<operation>, :$content {
+                $i = 0
+            }
             elsif $func.commute === True &&
-                $node.children[1].match: :type<operation>, :$content
-                { $i = 1 }
-            if defined $i {
+              $node.children[1].match: :type<operation>, :$content {
+                $i = 1
+            }
+            if $i.defined {
                 my $child = $node.children[$i];
                 $child.children .= map: {
                     my $new = $node.clone;
@@ -791,7 +821,7 @@ method expand () {
         # btw this tree/while/hit/find thing is looking familiar...wrap?
     }
 
-    self;
+    self
 }
 
 our ($det_template, $quad_template_det, $quad_template_nodet);
@@ -813,7 +843,7 @@ method isolate_quadratic ($var, $a, $b, $c, :$tree = $!tree) {
 
     $tree.set: $new.tree;
 
-    self;
+    self
 }
 
 proto method isolate (|) {*}
@@ -831,7 +861,8 @@ multi method isolate (Str:D $var) {
         if %coeffs{1 & 2} :exists {
             %coeffs<0> //= Math::Symbolic::Tree.new-val: 0;
             self.isolate_quadratic($var, |%coeffs{2...0});
-        } else {
+        }
+        else {
             # removes extraneous x^0 before re-calling isolate for a single instance of $var
             for $tree.find_all: :type<operation>, :content<power>, :children(
                 { :type<symbol>, :content($var) },
@@ -842,13 +873,15 @@ multi method isolate (Str:D $var) {
 
             self.isolate: $var;
         }
-    } elsif !@paths {
+    }
+    elsif !@paths {
         die "Error: symbol '$var' not found in relation '$tree'";
-    } else {
+    }
+    else {
         self.isolate: :path(@paths[0]);
     }
 
-    self.simplify;
+    self.simplify
 }
 
 multi method isolate (:@path) {
@@ -888,7 +921,8 @@ multi method isolate (:@path) {
                 } else {
                     $work.children .= reverse;
                 }
-            } else {
+            }
+            else {
                 die "Error: reversing '$op' is NYI";
             }
         }
@@ -912,7 +946,7 @@ multi method isolate (:@path) {
         $work = $next;
     }
 
-    self;
+    self
 }
 
 method !dump_parse ($tree, $level = 0, $anno is copy = '') {
@@ -945,8 +979,6 @@ method raku () {
 }
 
 method gist () { self.Str }
-
-
 
 #`[[[
 
@@ -993,5 +1025,4 @@ An op with a negative second arg is equal to the negative op 1 level down with i
 
 ]]]
 
-
-
+# vim: expandtab shiftwidth=4

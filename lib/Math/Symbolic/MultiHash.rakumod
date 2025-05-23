@@ -44,6 +44,7 @@ method matching (*%keyhash) {
         push @hits, $v if $hit;
     }
 
-    return |@hits;
+    |@hits
 }
 
+# vim: expandtab shiftwidth=4

@@ -1,20 +1,30 @@
 {
-    "raku" : "6.*",
-    "name" : "Math::Symbolic",
-    "license" : "Artistic-2.0",
-    "version" : "*",
-    "description" : "Symbolic math for Raku",
-    "author" : "raydiak",
-    "depends" : [ ],
-    "provides" : {
-        "Math::Symbolic"            : "lib/Math/Symbolic.rakumod",
-        "Math::Symbolic::Actions"   : "lib/Math/Symbolic/Actions.rakumod",
-        "Math::Symbolic::Constants" : "lib/Math/Symbolic/Constants.rakumod",
-        "Math::Symbolic::Grammar"   : "lib/Math/Symbolic/Grammar.rakumod",
-        "Math::Symbolic::Language"  : "lib/Math/Symbolic/Language.rakumod",
-        "Math::Symbolic::Operation" : "lib/Math/Symbolic/Operation.rakumod",
-        "Math::Symbolic::Tree"      : "lib/Math/Symbolic/Tree.rakumod",
-        "Math::Symbolic::MultiHash" : "lib/Math/Symbolic/MultiHash.rakumod"
-    },
-    "source-url" : "git://github.com/raydiak/Math-Symbolic.git"
+  "auth": "zef:raku-community-modules",
+  "author": "raydiak",
+  "build-depends": [
+  ],
+  "depends": [
+  ],
+  "description": "Symbolic math for Raku",
+  "license": "Artistic-2.0",
+  "name": "Math::Symbolic",
+  "provides": {
+    "Math::Symbolic": "lib/Math/Symbolic.rakumod",
+    "Math::Symbolic::Actions": "lib/Math/Symbolic/Actions.rakumod",
+    "Math::Symbolic::Constants": "lib/Math/Symbolic/Constants.rakumod",
+    "Math::Symbolic::Grammar": "lib/Math/Symbolic/Grammar.rakumod",
+    "Math::Symbolic::Language": "lib/Math/Symbolic/Language.rakumod",
+    "Math::Symbolic::MultiHash": "lib/Math/Symbolic/MultiHash.rakumod",
+    "Math::Symbolic::Operation": "lib/Math/Symbolic/Operation.rakumod",
+    "Math::Symbolic::Tree": "lib/Math/Symbolic/Tree.rakumod"
+  },
+  "raku": "6.*",
+  "resources": [
+  ],
+  "source-url": "https://github.com/raku-community-modules/Math-Symbolic.git",
+  "tags": [
+  ],
+  "test-depends": [
+  ],
+  "version": "0.1"
 }

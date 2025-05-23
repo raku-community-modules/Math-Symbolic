@@ -32,7 +32,7 @@ method match (*%s) {
         }
     }
 
-    return True;
+    True
 }
 
 method find (*%s) {
@@ -43,7 +43,7 @@ method find (*%s) {
         return $result if $result;
     }
 
-    return;
+    Nil
 }
 
 method find_all (Bool :$path = False, *%s) {
@@ -56,7 +56,7 @@ method find_all (Bool :$path = False, *%s) {
         @results.append: @child_results;
     }
 
-    return @results;
+    @results
 }
 
 method chain (Bool :$ops = False) {
@@ -76,7 +76,7 @@ method chain (Bool :$ops = False) {
         }
     }
 
-    @chain;
+    @chain
 }
 
 method count () {
@@ -94,7 +94,8 @@ method list () {
             $var.content = $_;
             push @return, $var;
         }
-    } else {
+    }
+    else {
         @return = self;
     }
 
@@ -109,7 +110,7 @@ method list () {
         }
     }
 
-    @return;
+    @return
 }
 
 proto method child(|) {*}
@@ -129,13 +130,13 @@ multi method set (Math::Symbolic::Tree $node, Bool :$type, Bool :$content, Bool 
     $.content = $node.content unless $content === False;
     @.children = $node.children unless $children === False;
 
-    self;
+    self
 }
 
 multi method set (*%props) {
     self."$_"() = %props{$_} for %props.keys;
 
-    self;
+    self
 }
 
 method get () {
@@ -148,7 +149,7 @@ method swap (Math::Symbolic::Tree $node) {
     self.set: $node;
     $node.set: |%tmp;
 
-    self;
+    self
 }
 
 method Str () {
@@ -229,7 +230,7 @@ method translate (Str:D $language is copy) {
         }
     }
 
-    "($str)";
+    "($str)"
 }
 
 method Numeric () {
@@ -241,9 +242,13 @@ method Numeric () {
             my &eval = $op.function.eval or
                 die "Error: cannot numify; no eval routine for operation $op";
             eval(|@(self.children».Numeric))
-        };
-        when 'value' { +self.content };
-        default { die "Error: cannot numify nodes of type '$_'" };
+        }
+        when 'value' {
+            +self.content
+        }
+        default {
+            die "Error: cannot numify nodes of type '$_'";
+        }
     }
 }
 
@@ -262,21 +267,21 @@ method new-chain ($op, *@children is copy, *%args is copy) {
     my $chain = self.new: |%args, :children(@children.shift, @children.shift);
     $chain = self.new: |%args, :children($chain, @children.shift) while @children;
 
-    $chain;
+    $chain
 }
 
 method new-val ($val, *%args is copy) {
     %args<type> = 'value';
     %args<content> = $val;
 
-    self.new: |%args;
+    self.new: |%args
 }
 
 method new-sym ($sym, *%args is copy) {
     %args<type> = 'symbol';
     %args<content> = $sym;
 
-    self.new: |%args;
+    self.new: |%args
 }
 
 method new-op ($op, *@children, *%args is copy) {
@@ -284,7 +289,7 @@ method new-op ($op, *@children, *%args is copy) {
     %args<content> = $op;
     %args<children>.append: @children if @children;
 
-    self.new: |%args;
+    self.new: |%args
 }
 
-
+# vim: expandtab shiftwidth=4
