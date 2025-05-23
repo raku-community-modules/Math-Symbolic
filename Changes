@@ -1,4 +1,6 @@
 Revision history for Math::Symbolic
 
 {{$NEXT}}
+
+0.1  2025-05-23T17:35:54+02:00
     - Initial version as a Raku Community Module
