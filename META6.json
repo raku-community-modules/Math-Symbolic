@@ -3,6 +3,8 @@
   "authors": [
     "raydiak"
   ],
+  "build-depends": [
+  ],
   "depends": [
   ],
   "description": "Symbolic math for Raku",
@@ -19,6 +21,9 @@
     "Math::Symbolic::Tree": "lib/Math/Symbolic/Tree.rakumod"
   },
   "raku": "6.*",
+  "resources": [
+  ],
+  "source-url": "https://github.com/raku-community-modules/Math-Symbolic.git",
   "support": {
     "bugtracker": "https://github.com/raku-community-modules/Math-Symbolic/issues",
     "email": "community@raku.org",
@@ -26,5 +31,7 @@
   },
   "tags": [
   ],
-  "version": "0.1"
+  "test-depends": [
+  ],
+  "version": "0.2"
 }
