@@ -1,6 +1,9 @@
 Revision history for Math::Symbolic
 
 {{$NEXT}}
+    - Make module RakuAST ready (ugexe++)
+    - Modernize META
+    - Update copyright year
 
 0.1  2025-05-23T17:35:54+02:00
     - Initial version as a Raku Community Module
