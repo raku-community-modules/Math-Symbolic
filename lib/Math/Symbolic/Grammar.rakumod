@@ -129,7 +129,7 @@ my $pre_ops = '[' ~ @(@pre».parts»[0]).map("'" ~ * ~ "'").join('|') ~ ']';
 token prefix_operator { <$pre_ops> }
 
 rule postfix_operation_chain {
-    <.ws> <before .* <.postfix_operator> >
+    <.ws> <before .*! <.postfix_operator> >
     <postfix_term><postfix_operator>+
 }
 my $post_ops = '[' ~ @(@post».parts»[0]).map("'" ~ * ~ "'").join('|') ~ ']';
